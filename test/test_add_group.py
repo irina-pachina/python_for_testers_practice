@@ -1,6 +1,6 @@
 import pytest
-from group import Group
-from application import Application
+from model.group import Group
+from fixture.application import Application
 
 
 # in pytest fixture is passed it test functions as parameter
