@@ -58,12 +58,9 @@ class ContactHelper:
                 first_name = cells[1].text
                 last_name = cells[2].text
                 id = cells[0].find_element_by_tag_name("input").get_attribute("value")
-                all_phones = cells[5].text.splitlines()
-                for i in range(len(all_phones), 4):
-                    all_phones.append("")
+                all_phones = cells[5].text
                 self.contact_cache.append(
-                    Contact(first_name=first_name, last_name=last_name, id=id, tele_home=all_phones[0],
-                            tele_mobile=all_phones[1], tele_work=all_phones[2], tele_second=all_phones[3]))
+                    Contact(first_name=first_name, last_name=last_name, id=id, all_phones_home=all_phones))
         return list(self.contact_cache)
 
     def count(self):
