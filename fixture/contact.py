@@ -1,4 +1,5 @@
 from model.contact import Contact
+import re
 
 
 class ContactHelper:
@@ -49,13 +50,60 @@ class ContactHelper:
             wd = self.app.wd
             self.app.open_home_page()
             self.contact_cache = []
-            for element in wd.find_elements_by_css_selector("tr[name='entry']"):
-                name = element.find_element_by_css_selector("td:nth-child(3)").text
-                id = element.find_element_by_name("selected[]").get_attribute("value")
-                self.contact_cache.append(Contact(first_name=name, id=id))
-        return self.contact_cache
+            # wd.find_elements_by_css_selector("tr[name='entry']")
+            for element in wd.find_elements_by_name("entry"):
+                # name = element.find_element_by_css_selector("td:nth-child(3)").text
+                # id = element.find_element_by_name("selected[]").get_attribute("value")
+                cells = element.find_elements_by_tag_name("td")
+                first_name = cells[1].text
+                last_name = cells[2].text
+                id = cells[0].find_element_by_tag_name("input").get_attribute("value")
+                all_phones = cells[5].text.splitlines()
+                for i in range(len(all_phones), 4):
+                    all_phones.append("")
+                self.contact_cache.append(
+                    Contact(first_name=first_name, last_name=last_name, id=id, tele_home=all_phones[0],
+                            tele_mobile=all_phones[1], tele_work=all_phones[2], tele_second=all_phones[3]))
+        return list(self.contact_cache)
 
     def count(self):
         wd = self.app.wd
         self.app.open_home_page()
         return len(wd.find_elements_by_name("selected[]"))
+
+    def open_view_contact_page(self, index):
+        wd = self.app.wd
+        self.app.open_home_page()
+        row = wd.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[6]
+        cell.find_element_by_tag_name("a").click()
+
+    def get_contact_from_view_page(self, index):
+        wd = self.app.wd
+        self.open_view_contact_page(index)
+        text = wd.find_element_by_id("content").text
+        tele_home = re.search("H: (.*)", text).group(1) if re.search("H: (.*)", text) else ""
+        tele_mobile = re.search("M: (.*)", text).group(1) if re.search("M: (.*)", text) else ""
+        tele_work = re.search("W: (.*)", text).group(1) if re.search("W: (.*)", text) else ""
+        tele_second = re.search("P: (.*)", text).group(1) if re.search("P: (.*)", text) else ""
+        return Contact(tele_home=tele_home, tele_mobile=tele_mobile, tele_work=tele_work, tele_second=tele_second)
+
+    def open_edit_contact_page(self, index):
+        wd = self.app.wd
+        self.app.open_home_page()
+        row = wd.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[7]
+        cell.find_element_by_tag_name("a").click()
+
+    def get_contact_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_edit_contact_page(index)
+        first_name = wd.find_element_by_name("firstname").get_attribute("value")
+        last_name = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        tele_home = wd.find_element_by_name("home").get_attribute("value")
+        tele_mobile = wd.find_element_by_name("mobile").get_attribute("value")
+        tele_work = wd.find_element_by_name("work").get_attribute("value")
+        tele_second = wd.find_element_by_name("phone2").get_attribute("value")
+        return Contact(first_name=first_name, last_name=last_name, tele_home=tele_home, tele_mobile=tele_mobile,
+                       tele_work=tele_work, tele_second=tele_second, id=id)
