@@ -3,12 +3,12 @@ from model.group import Group
 
 def test_add_group(app):
     old_groups = app.group.get_group_list()
-    group = Group(name="nameassert", header="header1", footer="footer1")
+    group = Group(name="namecache", header="header1", footer="footer1")
     app.group.create(group)
     # imitate occasional logout or failed test to check function "ensure_login"
     # app.session.logout()
+    assert len(old_groups) + 1 == app.group.count()
     new_groups = app.group.get_group_list()
-    assert len(old_groups) + 1 == len(new_groups)
     old_groups.append(group)
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
 
