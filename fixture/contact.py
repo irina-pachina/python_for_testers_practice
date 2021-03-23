@@ -15,6 +15,7 @@ class ContactHelper:
         self.fill_contact_form(contact)
         wd.find_element_by_name("submit").click()
         self.return_to_home_page()
+        self.contact_cache = None
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
@@ -41,12 +42,20 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_element_by_link_text("home page").click()
 
+    contact_cache = None
+
     def get_contact_list(self):
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.app.open_home_page()
+            self.contact_cache = []
+            for element in wd.find_elements_by_css_selector("tr[name='entry']"):
+                name = element.find_element_by_css_selector("td:nth-child(3)").text
+                id = element.find_element_by_name("selected[]").get_attribute("value")
+                self.contact_cache.append(Contact(first_name=name, id=id))
+        return self.contact_cache
+
+    def count(self):
         wd = self.app.wd
         self.app.open_home_page()
-        contact_list = []
-        for element in wd.find_elements_by_css_selector("tr[name='entry']"):
-            name = element.find_element_by_css_selector("td:nth-child(3)").text
-            id = element.find_element_by_name("selected[]").get_attribute("value")
-            contact_list.append(Contact(first_name=name, id=id))
-        return contact_list
+        return len(wd.find_elements_by_name("selected[]"))
