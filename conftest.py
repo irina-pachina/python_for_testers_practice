@@ -1,9 +1,12 @@
 # in pytest "conftest" makes fixture function accessible to all tests
 import pytest
+import json
+import os.path
 from fixture.application import Application
 
 
 fixture = None
+target = None
 
 
 # in pytest fixture is passed it test functions as parameter
@@ -13,14 +16,18 @@ fixture = None
 @pytest.fixture
 def app(request):
     global fixture
+    global target
     browser = request.config.getoption("--browser")
-    stand_url = request.config.getoption("--standURL")
-    if fixture is None:
-        fixture = Application(browser=browser, stand_url=stand_url)
-    else:
-        if not fixture.is_valid():
-            fixture = Application(browser=browser, stand_url=stand_url)
-    fixture.session.ensure_login(username="admin", password="secret")
+    if target is None:
+        # w/o __file__ 'tricks' "target.json" will tried to be open in current directory
+        # i.e. in ../test or Configuration>Working Directory
+        # thus config path should be stored in root directory and 'built' from current one
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), request.config.getoption("--target"))
+        with open(config_path) as file:
+            target = json.load(file)
+    if fixture is None or not fixture.is_valid():
+        fixture = Application(browser=browser, stand_url=target["standURL"])
+    fixture.session.ensure_login(username=target["username"], password=target["password"])
     return fixture
 
 
@@ -43,4 +50,5 @@ def stop(request):
 # (dest) D:\code\python_software_testing>py.test --browser=firefox test\test_delete_group.py
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome")
-    parser.addoption("--standURL", action="store", default="http://addressbook/")
+    # the rest of parameters are stored in config file
+    parser.addoption("--target", action="store", default="target.json")
