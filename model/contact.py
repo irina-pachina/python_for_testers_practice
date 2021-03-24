@@ -16,7 +16,8 @@ class Contact:
         self.all_phones_view = all_phones_view
 
     def __repr__(self):
-        return f"{self.first_name} {self.last_name}, id = {self.id}"
+        return f"{self.first_name}{' ' + self.last_name if self.last_name else ''}, H: {self.tele_home}, M: {self.tele_mobile}, W: {self.tele_work}, " \
+               f"S: {self.tele_second},id = {self.id}"
 
     def __eq__(self, other):
         # test data doesn't have id and such elements in old_contacts should be compared only by name

@@ -21,6 +21,7 @@ class ContactHelper:
     def fill_contact_form(self, contact):
         wd = self.app.wd
         self.insert_value("firstname", contact.first_name)
+        self.insert_value("lastname", contact.last_name)
         self.insert_value("home", contact.tele_home)
         # choosing from existing group
         self.choose_dropdown("new_group", contact.group)
@@ -55,8 +56,8 @@ class ContactHelper:
                 # name = element.find_element_by_css_selector("td:nth-child(3)").text
                 # id = element.find_element_by_name("selected[]").get_attribute("value")
                 cells = element.find_elements_by_tag_name("td")
-                first_name = cells[1].text
-                last_name = cells[2].text
+                first_name = cells[2].text
+                last_name = cells[1].text
                 id = cells[0].find_element_by_tag_name("input").get_attribute("value")
                 all_phones = cells[5].text
                 self.contact_cache.append(
