@@ -9,7 +9,7 @@ class Group:
         self.id = id
 
     def __repr__(self):
-        return f"name = {self.name}, id = {self.id}"
+        return f"name = {self.name}, id = {self.id}, header = {self.header}, footer = {self.footer}"
 
     def __eq__(self, other):
         # test data doesn't have id and such elements in old_groups should be compared only by name
