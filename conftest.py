@@ -53,6 +53,11 @@ def db(request):
     return db_fixture
 
 
+@pytest.fixture(scope="session")
+def check_ui(request):
+    return request.config.getoption("--check_ui")
+
+
 # fixture finalization
 # scope = "session" means that fixture is created once for all tests
 # in pytest "autouse" call fixture automatically
@@ -72,6 +77,7 @@ def stop(request):
 # (dest) D:\code\python_software_testing>py.test --browser=firefox test\test_delete_group.py
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome")
+    parser.addoption("--check_ui", action="store_true")
     # the rest of parameters are stored in config file
     parser.addoption("--target", action="store", default="target.json")
 
