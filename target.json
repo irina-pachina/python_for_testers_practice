@@ -1,5 +1,13 @@
 {
-  "standURL": "http://addressbook/",
-  "username": "admin",
-  "password": "secret"
+  "web": {
+    "standURL": "http://addressbook/",
+    "username": "admin",
+    "password": "secret"
+  },
+  "db": {
+    "host": "localhost",
+    "name": "addressbook",
+    "user": "root",
+    "password": ""
+  }
 }
