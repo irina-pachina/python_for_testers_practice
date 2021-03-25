@@ -9,6 +9,8 @@ class DataBase:
         self.user = user
         self.password = password
         self.connection = mysql.connector.connect(host=host, database=name, user=user, password=password)
+        # autocommit mode means data are committed after every transaction
+        self.connection.autocommit = True
 
     def get_group_list(self):
         group_list = []
