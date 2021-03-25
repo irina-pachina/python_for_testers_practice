@@ -1,12 +1,8 @@
 from model.group import Group
-import pytest
-from data.add_group import testdata
-# or can import different variable as testdata
-# from data.add_group import constant as testdata
 
 
-@pytest.mark.parametrize("group", testdata, ids=[repr(x) for x in testdata])
-def test_add_group(app, group):
+def test_add_group(app, data_groups):
+    group = data_groups
     old_groups = app.group.get_group_list()
     app.group.create(group)
     # imitate occasional logout or failed test to check function "ensure_login"

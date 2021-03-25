@@ -2,6 +2,7 @@
 import pytest
 import json
 import os.path
+import importlib
 from fixture.application import Application
 
 
@@ -52,3 +53,15 @@ def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome")
     # the rest of parameters are stored in config file
     parser.addoption("--target", action="store", default="target.json")
+
+# pytest_generate_tests hook function is called when collecting a test function
+# to make parametrization dynamic and custom
+def pytest_generate_tests(metafunc):
+    for fixture in metafunc.fixturenames:
+        if fixture.startswith("data_"):
+            testdata = load_from_module(fixture[5:])
+            metafunc.parametrize(fixture, testdata, ids=[str(x) for x in testdata])
+
+
+def load_from_module(module):
+    return importlib.import_module("data.%s" % module).testdata
