@@ -1,5 +1,6 @@
 import mysql.connector
 from model.group import Group
+from model.contact import Contact
 
 
 class DataBase:
@@ -23,6 +24,18 @@ class DataBase:
         finally:
             cursor.close()
         return group_list
+
+    def get_contact_list(self):
+        contact_list = []
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute("SELECT id, firstname, lastname FROM addressbook where deprecated='0000-00-00 00:00:00'")
+            for row in cursor:
+                (id, first_name, last_name) = row
+                contact_list.append(Contact(first_name=first_name, last_name=last_name, id=str(id)))
+        finally:
+            cursor.close()
+        return contact_list
 
     def destroy(self):
         self.connection.close()

@@ -14,6 +14,12 @@ def test_contacts_view(app):
     assert merge_phones_like_home(contact_from_view) == merge_phones_like_home(contact_from_edit)
 
 
+def test_contact_list_db(app, db):
+    db_list = db.get_contact_list()
+    app_list = app.contact.get_contact_list()
+    assert sorted(db_list, key=Contact.id_or_max) == sorted(app_list, key=Contact.id_or_max)
+
+
 def clear(string):
     return re.sub("[() -]", "", string)
 
