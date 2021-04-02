@@ -38,7 +38,7 @@ class ContactHelper:
         if text is not None:
             wd.find_element_by_name(field_name).click()
             dropdown = wd.find_element_by_name(field_name)
-            dropdown.find_element_by_xpath(f"//option[. = '{text}']").click()
+            dropdown.find_element_by_xpath(f".//option[. = '{text}']").click()
 
     def return_to_home_page(self):
         wd = self.app.wd
@@ -49,7 +49,7 @@ class ContactHelper:
     def get_contact_list(self):
         if self.contact_cache is None:
             wd = self.app.wd
-            self.app.open_home_page()
+            # self.app.open_home_page()
             self.contact_cache = []
             # wd.find_elements_by_css_selector("tr[name='entry']")
             for element in wd.find_elements_by_name("entry"):
@@ -105,3 +105,21 @@ class ContactHelper:
         tele_second = wd.find_element_by_name("phone2").get_attribute("value")
         return Contact(first_name=first_name, last_name=last_name, tele_home=tele_home, tele_mobile=tele_mobile,
                        tele_work=tele_work, tele_second=tele_second, id=id)
+
+    def add_to_group(self, contact, group):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.choose_dropdown("to_group", group.name)
+        wd.find_element_by_name("to_group").click()
+        wd.find_element_by_id(contact.id).click()
+        wd.find_element_by_name("add").click()
+        wd.find_element_by_link_text(f'group page "{group.name}"').click()
+
+    def delete_from_group(self, contact, group):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.choose_dropdown("group", group.name)
+        wd.find_element_by_name("group").click()
+        wd.find_element_by_id(contact.id).click()
+        wd.find_element_by_name("remove").click()
+        wd.find_element_by_link_text(f'group page "{group.name}"').click()
