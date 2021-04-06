@@ -1,0 +1,23 @@
+[
+    {
+        "py/object": "model.group.Group",
+        "name": "",
+        "header": "",
+        "footer": "",
+        "id": null
+    },
+    {
+        "py/object": "model.group.Group",
+        "name": "namet",
+        "header": "header",
+        "footer": "footer- ",
+        "id": null
+    },
+    {
+        "py/object": "model.group.Group",
+        "name": "name 3X",
+        "header": "header",
+        "footer": "footer",
+        "id": null
+    }
+]
